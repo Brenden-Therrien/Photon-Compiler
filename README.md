@@ -1,7 +1,7 @@
 # Learning to make a compiler!
 
-Building a compiler rom scratch to understand how programming language work!
-My end goal is to make **'Photon'** a graphics-focused programming language
+Building a Interpreter from scratch, with JIT compilation and a VM to run it to understand how programming language work!
+My end goal is to make **'Photon'** a Interpreted language that hopefully makes graphics easy and enforces behavioural purity for safer, more predictable code.
 
 # Progress
 
@@ -15,8 +15,17 @@ My end goal is to make **'Photon'** a graphics-focused programming language
 2. Numbers
 3. Operators (+, -, *, /, =, ==, !=, <=, >=)
 4. whitespace handling
+5. Comments '#'
+6. newlines '\n'
+7. parentheses, breackets, braces
 
 **Parser** handles:
 1. numbers, operations
 2. makes a proper AST
 3. interprets simple mathmatical operations (+, -, *, /)
+
+**"Compiler"**
+(WIP)
+
+**VM (virtual machine)**
+(WIP)
