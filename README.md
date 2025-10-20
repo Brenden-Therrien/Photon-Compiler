@@ -18,6 +18,7 @@ My end goal is to make **'Photon'** a Interpreted language that hopefully makes 
 5. Comments '#'
 6. newlines '\n'
 7. parentheses, breackets, braces
+8. Keywords ('var', 'func', 'if', 'return', 'pure', 'int', 'float', 'string')
 
 **Parser** handles:
 1. numbers, operations

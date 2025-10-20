@@ -1,10 +1,12 @@
-# First iteration of a lexer!
+# Lexer
 
 code = "var x = 3 + 5"
 i = 0
 tokens = []
 
 def tokenize(code):
+    line = 1
+    column = 1
     i = 0
     tokens = []
     KEYWORDS = {'var', 'func', 'if', 'return', 'pure', 'int', 'float', 'string'}
@@ -15,55 +17,67 @@ def tokenize(code):
 
 
         if char.isalpha():
+            start_column = column
             word = ""
             while i < len(code) and (code[i].isalpha() or code[i] == '_'):
                 word += code[i]
                 i += 1
+                column += 1
             if word in KEYWORDS:
-                tokens.append((f'KEYWORD_{word.upper()}', word))
+                tokens.append((f'KEYWORD_{word.upper()}', word, line, start_column))
                 continue
             else:
-                tokens.append(('Identifier', word))
+                tokens.append(('IDENTIFIER', word, line, start_column))
+                column += len(word)
                 continue
         
         # Newlines
         elif char == "\n":
-            tokens.append(('NEWLINE', None))
+            tokens.append(('NEWLINE', '\\n', line, column))
             i += 1
+            line += 1
+            column = 1
             continue
 
         # Comments
         elif char == '#':
             while i < len(code) and code[i] != '\n':
                 i += 1
+                column += 1
             continue
 
         # Numbers
         elif char.isdigit():
-
+            start_column = column
             number = ""
+
             while i < len(code) and code[i].isdigit():
                 number += code[i]
                 i += 1
-            tokens.append(('NUMBER', number))
+                column += 1
+            tokens.append(('NUMBER', number, line, start_column))
             continue
 
         # (Symbols Section)
         elif char == '+':
-            tokens.append(('PLUS', None))
+            tokens.append(('PLUS', '+', line, column))
             i += 1
+            column += 1
             continue
         elif char == '-':
-            tokens.append(('MINUS', None))
+            tokens.append(('MINUS', '-', line, column))
             i += 1
+            column += 1
             continue
         elif char == '*':
-            tokens.append(('STAR', None))
+            tokens.append(('STAR', '*', line, column))
             i += 1
+            column += 1
             continue
         elif char == '/':
-            tokens.append(('SLASH', None))
+            tokens.append(('SLASH', '/', line, column))
             i += 1
+            column += 1
             continue
         # Handles strings
         elif char == '"':
@@ -73,91 +87,110 @@ def tokenize(code):
                 value += code[i]
                 i += 1
             i += 1 # this skips the closing quote
-            tokens.append(('STRING', value))
+            tokens.append(('STRING', value, line, start_column))
+            column += len(value) + 2 
             continue
 
 
         # Handle multi-equals (Assignment section)
         elif char == '=':
             if i + 1 < len(code) and code[i + 1] == '=': # if 2 characters, and the second character is '=' then its '=='
-                tokens.append(('DOUBLE_EQUALS', None))
+                tokens.append(('DOUBLE_EQUALS', '==', line, column))
                 i += 2
+                column += 2
                 continue
             else:
-                tokens.append((f'EQUALS', None))
+                tokens.append((f'EQUALS', '=', line, column))
                 i += 1
+                column += 1
                 continue
         elif char == '!':
             if i + 1 < len(code) and code[i + 1] == '=':
-                tokens.append(('NOT_EQUALS', None))
+                tokens.append(('NOT_EQUALS', '!=', line, column))
                 i += 2
+                column += 2
                 continue
             else:
-                tokens.append(('NOT', None))
+                tokens.append(('NOT', '!', line, column))
                 i += 1
+                column += 1
                 continue
         elif char == '>':
             if i + 1 < len(code) and code[i + 1] == '=':
-                tokens.append(('GREATER_OR_EQUAL', None))
+                tokens.append(('GREATER_OR_EQUAL', '>=', line, column))
                 i += 2
+                column += 2
                 continue
             else:
-                tokens.append(('GREATER_THAN', None))
+                tokens.append(('GREATER_THAN', '>', line, column))
                 i += 1
+                column += 1
                 continue
         elif char == '<':
             if i + 1 < len(code) and code[i + 1] == '=':
-                tokens.append(('LESS_OR_EQUAL', None))
+                tokens.append(('LESS_OR_EQUAL', '<=', line, column))
                 i += 2
+                column += 2
                 continue
             else:
-                tokens.append(('LESS_THAN', None))
+                tokens.append(('LESS_THAN', '<', line, column))
                 i += 1
+                column += 1
                 continue
         elif char == ':':
             if i + 1 < len(code) and code[i + 1] == '=':
-                tokens.append(("ASSIGNMENT", None))
+                tokens.append(("ASSIGNMENT", ':=', line, column))
                 i += 2
+                column += 2
                 continue
             else:
-                tokens.append(("COLON", None))
+                tokens.append(("COLON", ':', line, column))
                 i += 1
+                column += 1
                 continue
 
 
         # (Wrapping symbols section '()', '[]', '{}')
         elif char == '(':
-            tokens.append(('LPAREN', None))
+            tokens.append(('LPAREN', '(', line, column))
             i += 1
+            column += 1
             continue
         elif char == ')':
-            tokens.append(('RPAREN', None))
+            tokens.append(('RPAREN', ')', line, column))
             i += 1
+            column += 1
             continue
         elif char == '[':
-            tokens.append(('LBRACKET', None))
+            tokens.append(('LBRACKET', '[', line, column))
             i += 1
+            column += 1
             continue
         elif char == ']':
-            tokens.append(('RBRACKET', None))
+            tokens.append(('RBRACKET', ']', line, column))
             i += 1
+            column += 1
             continue
         elif char == '{':
-            tokens.append(('LBRACE', None))
+            tokens.append(('LBRACE', '{', line, column))
             i += 1
+            column += 1
             continue
         elif char == '}':
-            tokens.append(('RBRACE', None))
+            tokens.append(('RBRACE', '}', line, column))
             i += 1
+            column += 1
             continue
 
             
         elif char == ' ': # ignore Whitespaces
             i += 1 
+            column += 1
+            continue
 
         else:
-            print(f'Unexpected character: {char}')
+            print(f'Unexpected character: {char} at line {line}, column {column}')
             i += 1
-
+    tokens.append(('EOF', None, line, column))
     return tokens
 print(tokenize(code))

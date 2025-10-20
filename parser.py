@@ -28,7 +28,7 @@ def parse_expression():
 def parse_multiplication():
     left = parse_number()
 
-    if current_token and (current_token[0]== 'STAR' or current_token[0] == 'SLASH'):
+    if current_token and (current_token[0] == 'STAR' or current_token[0] == 'SLASH'):
         operator = current_token
         advance()
         right = parse_multiplication()
