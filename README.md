@@ -1,4 +1,4 @@
-# Learning to make a compiler!
+# Learning to make a Interpreter!
 
 Building a Interpreter from scratch, with JIT compilation and a VM to run it to understand how programming language work!
 My end goal is to make **'Photon'** a Interpreted language that hopefully makes graphics easy and enforces behavioural purity for safer, more predictable code.
