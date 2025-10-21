@@ -6,8 +6,9 @@ My end goal is to make **'Photon'** a Interpreted language that hopefully makes 
 # Progress
 
 - [x] Lexer
-- [x] Parser - got a basic one working right now, basic AST with simple mathmatical operations supported
-- [ ] Code Generator (Doing this next, currently just an interpreter)
+- [x] Parser - Currently have (Variable, mathmatic operations, assignments like 'float', 'int', 'string')
+- [x] Compiler / VM - basic yet working
+- [x] Main file - impimented, run from here and put your desired code in ("code = ''") in main.py
 
 # Features so far:
 **Lexer** handles:
@@ -26,7 +27,7 @@ My end goal is to make **'Photon'** a Interpreted language that hopefully makes 
 3. interprets simple mathmatical operations (+, -, *, /)
 
 **"Compiler"**
-(WIP)
+Basic yet implimented
 
 **VM (virtual machine)**
-(WIP)
+works with all things supported so far. Reads from compiler!

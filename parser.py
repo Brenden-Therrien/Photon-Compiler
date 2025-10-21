@@ -4,6 +4,7 @@ import lexer
 tokens = [] # list from the lexer
 position = 0
 current_token = None
+variables = {}
 
 def advance():
     global position, current_token
@@ -41,13 +42,54 @@ def parse_number():
         value = current_token[1]
         advance()
         return ('NUMBER', value)
+    
+    # Handle identifiers (variables)
+    elif current_token and current_token[0] == 'IDENTIFIER':
+        var_name = current_token[1]
+        advance()
+        
+        # Look up the variable
+        if var_name not in variables:
+            raise Exception(f"Variable '{var_name}' not defined")
+        return ('VARIABLE', var_name)
     else:
-        raise Exception(f"Expected number, got {current_token}")
+        raise Exception(f"Expected number or variable, got {current_token}")
+
+def parse_var_declaration():
+    # expect: var IDENTIFIER TYPE = EXPRESSION
+
+    if current_token[0] != 'KEYWORD_VAR':
+        raise Exception("Expected 'var'")
+    advance()
+
+    if current_token[0] != 'IDENTIFIER':
+        raise Exception("Expected identifier")
+    var_name = current_token[1]
+    advance()
+
+    if current_token[0] not in ['KEYWORD_INT', 'KEYWORD_FLOAT', 'KEYWORD_STRING']:
+        raise Exception(f"Expected type (int, float, string), got {current_token}")
+    var_type = current_token[1]
+    advance()
+
+    if current_token[0] != 'EQUALS':
+        raise Exception("Expected '=' after type")
+    advance()
+
+    # Parses the expression
+    value_expr = parse_expression()
+
+    variables[var_name] = {'type': var_type, 'expr': value_expr}
+    return ('VAR_DECL', var_name, var_type, value_expr)
 
 def evaluate(node):
     # if number, just return it
     if isinstance(node, tuple) and node[0] == 'NUMBER':
         return int(node[1]) # convert string to number
+
+    if isinstance(node, tuple) and node[0] == 'VARIABLE':
+        var_name = node[1]
+        return variables[var_name]['value']
 
     # if not number, its an operator
     operator = node[0]
@@ -62,10 +104,3 @@ def evaluate(node):
         return left * right
     elif operator[0] == 'SLASH':
         return left / right
-
-tokens = lexer.tokenize("597 + 16 * 45 / 12") # example code
-current_token = tokens[0] if tokens else None
-tree = parse_expression()
-print("AST:", tree)
-result = evaluate(tree)
-print("Result:", result)

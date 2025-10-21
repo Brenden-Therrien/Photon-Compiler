@@ -1,0 +1,8 @@
+PUSH = 'PUSH'
+ADD = 'ADD'
+SUB = 'SUB'
+MUL = 'MUL'
+DIV = 'DIV'
+STORE = 'STORE'
+LOAD = 'LOAD'
+HALT = 'HALT'

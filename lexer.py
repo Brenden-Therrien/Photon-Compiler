@@ -50,8 +50,11 @@ def tokenize(code):
         elif char.isdigit():
             start_column = column
             number = ""
+            has_dot = False
 
-            while i < len(code) and code[i].isdigit():
+            while i < len(code) and (code[i].isdigit() or (code[i] == '.' and not has_dot)):
+                if code[i] == '.':
+                    has_dot == True
                 number += code[i]
                 i += 1
                 column += 1
